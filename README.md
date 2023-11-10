@@ -36,8 +36,8 @@ This portfolio is licensed under the [MIT License](LICENSE).
 
 ## Contact
 
-- **Email:** [your.email@example.com](mailto:5a5ha0rr1ove@gmail.com)
-- **LinkedIn:** [Your LinkedIn Profile](https://www.linkedin.com/in/sasha-orlova-abb960273/)
+- **Email:** [5a5ha0rr1ove@gmail.com](mailto:5a5ha0rr1ove@gmail.com)
+- **LinkedIn:** [LinkedIn Profile](https://www.linkedin.com/in/sasha-orlova-abb960273/)
 
 Feel free to reach out if you have any questions, collaboration opportunities, or just want to connect!
 
