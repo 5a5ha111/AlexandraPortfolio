@@ -1,0 +1,44 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+
+// This describes a vertex on the generated mesh
+struct DrawVertex
+{
+    float3 positionWS; // The position in world space
+    float2 uv;
+};
+
+// A triangle on the generated mesh
+struct DrawTriangle
+{
+    float3 normalOS;  
+    float3 diffuseColor;
+    DrawVertex vertices[3]; // The three points on the triangle
+};
+
+StructuredBuffer<DrawTriangle> _DrawTriangles;
+AppendStructuredBuffer<DrawTriangle> _DrawTrianglesOut;
+
+float3 _Camera_Direction;
+int _NumSourceVertices;
+
+[numthreads(128,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    // Return if every point has been processed
+    if ((int)id >= _NumSourceVertices)
+    {
+        return;
+    }
+
+    DrawTriangle tri = _DrawTriangles[id.x];
+    float d = dot(_Camera_Direction, tri.normalOS);
+
+    /*if (d >= 0)
+    {
+        _DrawTrianglesOut.Append(tri);
+    }*/
+
+    _DrawTrianglesOut.Append(tri);
+}

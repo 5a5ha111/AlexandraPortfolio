@@ -1,0 +1,18 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel Main
+
+struct InderectArgs
+{
+    uint numVerticesPerInstance;
+    uint numInstances;
+    uint startVertexIndex;
+    uint startInstanceIndex;
+};
+RWStructuredBuffer<InderectArgs> _IndirectArgsBuffer;
+
+[numthreads(1,1,1)]
+void Main (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+    _IndirectArgsBuffer[0].numVerticesPerInstance *= 3;
+}

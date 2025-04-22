@@ -1,0 +1,103 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+struct SourceVertex
+{
+    float3 positionOS;
+    float2 uv;
+};
+
+StructuredBuffer<SourceVertex> _SourceVertices;
+StructuredBuffer<int> _SourceIndices;
+
+struct GeneratedVertex
+{
+    float3 positionOS;
+    float3 normalOS;
+    float2 uv;
+};
+
+RWStructuredBuffer<GeneratedVertex> _GeneratedVertices;
+RWStructuredBuffer<int> _GeneratedIndices;
+
+int _NumSourceTriangles;
+float _PyramidHeight;
+float4x4 _Transform;
+
+float4x4 _TransformOStoWS;
+float4x4 _TransformWStoOS;
+
+
+SourceVertex Transform(SourceVertex v)
+{
+    SourceVertex o;
+    o.positionOS = mul(_Transform, float4(v.positionOS, 1)).xyz;
+    o.uv = v.uv;
+    return o;
+}
+
+float3 CalculateSurfaceNormal(float3 p1, float3 p2, float3 p3)
+{
+    float3 U = p2 - p1;
+    float3 V = p3 - p1;
+
+    float3 normal;
+    normal.x = (U.y * V.z) - (U.z * V.y);
+    normal.y = (U.z * V.x) - (U.x * V.z);
+    normal.z = (U.x * V.y) - (U.y * V.x);
+
+    return normalize(normal);
+}
+GeneratedVertex MakeGeneratedVertex(SourceVertex source, float3 normal)
+{
+    GeneratedVertex o;
+    o.positionOS = source.positionOS;
+    o.normalOS = normal;
+    o.uv = source.uv;
+    return o;
+}
+
+void AddTriangle(int startIndex, SourceVertex a, SourceVertex b, SourceVertex c)
+{
+    float3 triangleNormal = CalculateSurfaceNormal(a.positionOS, b.positionOS, c.positionOS);
+
+    _GeneratedVertices[startIndex] = MakeGeneratedVertex(a, triangleNormal);
+    _GeneratedVertices[startIndex + 1] = MakeGeneratedVertex(b, triangleNormal);
+    _GeneratedVertices[startIndex + 2] = MakeGeneratedVertex(c, triangleNormal);
+    _GeneratedIndices[startIndex] = startIndex;
+    _GeneratedIndices[startIndex + 1] = startIndex + 1;
+    _GeneratedIndices[startIndex + 2] = startIndex + 2;
+}
+
+
+[numthreads(128,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+    if((int)id.x >= _NumSourceTriangles)
+    {
+        return;
+    }
+
+    int triStart = id.x * 3;
+    SourceVertex a = Transform(_SourceVertices[_SourceIndices[triStart]]);
+    SourceVertex b = Transform(_SourceVertices[_SourceIndices[triStart + 1]]);
+    SourceVertex c = Transform(_SourceVertices[_SourceIndices[triStart + 2]]);
+
+    /*float3 aWS = mul(a.positionOS, _TransformOStoWS).xyz;
+    float3 bWS = mul(b.positionOS, _TransformOStoWS).xyz;
+    float3 cWS = mul(c.positionOS, _TransformOStoWS).xyz;
+
+    float avgDist = length(abs(((aWS - bWS) + (aWS - cWS)) / 2));*/
+
+    //float3 triNormal = CalculateSurfaceNormal(a.positionOS, b.positionOS, c.positionOS);
+    SourceVertex center;
+    center.positionOS = (a.positionOS + b.positionOS + c.positionOS) / 3 /*+ triNormal * _PyramidHeight*/;
+    center.uv = (a.uv + b.uv + c.uv) / 3;
+
+    int generatedStart = id.x * 3 * 3;
+
+    AddTriangle(generatedStart, a, b, center);
+    AddTriangle(generatedStart + 3, b, c, center);
+    AddTriangle(generatedStart + 6, c, a, center);
+}

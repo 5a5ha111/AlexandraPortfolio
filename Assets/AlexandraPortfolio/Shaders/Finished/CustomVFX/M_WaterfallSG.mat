@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-4024309043335883969
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 7
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: M_WaterfallSG
+  m_Shader: {fileID: -6465566751694194690, guid: c71ede4108e08a943aca4f989bc63711, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _FlipBook:
+        m_Texture: {fileID: 2800000, guid: bde30cfff10e4a244bf49a5b9ced3589, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ConstantFlow: 1
+    - _DebugTime: 0
+    - _FadeInPower: 0.7
+    - _FadeOutPower: 4
+    - _FlipBookSpeed: 0.6
+    - _ManualTime: 0
+    - _MatchParticlePhase: 1
+    - _MaxTextureRGBSmoothStep: 0.22
+    - _Opacity: 1
+    - _ParticleEndSize: 1.2
+    - _ParticleSpead: 0
+    - _ParticleSpeed: 0.7
+    - _ParticleStartSize: 0.75
+    - _ParticleVelocityEnd: 1.2
+    - _ParticleVelocityStart: 2
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _RandomizeRotationDirection: 0
+    - _Rotation: 0
+    - _RotationRandomOffset: 1
+    - _RotationSpeed: 0
+    - _SoftAdges: 0
+    - _SoftEdgeDistance: 0.68
+    - _TextureRGBasAlpha: 1
+    - _UseConstantFlow: 0
+    m_Colors:
+    - _EmotterDimensions: {r: 0, g: 0, b: 0, a: 0}
+    - _EndColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FlipBookDimenions: {r: 13, g: 13, b: 0, a: 0}
+    - _Gravityy: {r: 0, g: -5.4, b: 0, a: 0}
+    - _ParticleDirectional: {r: 0, g: 0, b: 1, a: 0}
+    - _StartColor: {r: 0.6039216, g: 0.8392157, b: 0.9607843, a: 1}
+    - _Wind: {r: 0, g: 0, b: 0, a: 0}
+  m_BuildTextureStacks: []

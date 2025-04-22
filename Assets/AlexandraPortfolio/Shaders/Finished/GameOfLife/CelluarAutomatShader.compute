@@ -1,0 +1,77 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float4> PreResult;
+RWTexture2D<float4> Result;
+float gameFieldSize;
+float streamsCount;
+
+[numthreads(16,16,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+    bool isAlive = false;
+    int neighbors = 0;
+    for (int x = -1; x < 2; x++)
+    {
+        for (int y = -1; y < 2; y++)
+        {
+            /*int2 PreCoord = int2(id.x + x, id.y + y);
+            if (PreCoord.x > 511)
+            {
+                PreCoord.x -= 511;
+            }
+            if (PreCoord.x < 0)
+            {
+                PreCoord.x += 511;
+            }
+            if (PreCoord.y > 511)
+            {
+                PreCoord.y -= 511;
+            }
+            if (PreCoord.y < 0)
+            {
+                PreCoord.y += 511;
+            }*/
+
+            int2 PreCoord = int2((id.x + x + gameFieldSize) % gameFieldSize, (id.y + y + gameFieldSize) % gameFieldSize);
+
+            if (!(x == 0 && y == 0) && PreResult[/*int2(id.x + x, id.y + y)*/PreCoord].r > 0.8)
+            {
+                neighbors++;
+            }
+        }
+    }
+    if (PreResult[id.xy].r > 0.8)
+    {
+        if (neighbors == 2 || neighbors == 3)
+        {
+            //Result[id.xy] = float4(1.0, 1.0, 1.0, 1.0);
+            isAlive = true;
+        }
+        /*else
+        {
+            Result[id.xy] = float4(0.0, 0.0, 0.0, 1.0);
+        }*/
+    }
+    else if (neighbors == 3)
+    {
+        isAlive = true;
+    }
+
+
+    if (isAlive)
+    {
+        Result[id.xy] = float4(1.0, 1.0, 1.0, 1.0);
+    }
+    else
+    {
+        Result[id.xy] = float4(0.0, 0.0, 0.0, 1.0);
+    }
+
+    PreResult[id.xy] = Result[id.xy];
+    //Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+    //PreResult[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+}

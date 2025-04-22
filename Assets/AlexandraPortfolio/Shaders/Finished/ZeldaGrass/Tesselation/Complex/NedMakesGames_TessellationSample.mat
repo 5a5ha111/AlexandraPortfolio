@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: NedMakesGames_TessellationSample
+  m_Shader: {fileID: 4800000, guid: adf35d3b40de0d647899411cf8b09bec, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _GENERATE_NORMALS_MAP
+  - _PARTITIONING_INTEGER
+  - _TESSELLATION_FACTOR_CONSTANT
+  - _TESSELLATION_SMOOTHING_FLAT
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _HeightMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BackFaceCullTolerance: 0.01
+    - _FrustumCullTolerance: 0.01
+    - _GENERATE_NORMALS: 0
+    - _HeightMapAltitude: 0
+    - _NormalStrength: 1
+    - _PARTITIONING: 0
+    - _TESSELLATION_FACTOR: 0
+    - _TESSELLATION_SMOOTHING: 0
+    - _TessellationBias: 0
+    - _TessellationFactor: 0
+    - _TessellationFactorVColors: 0
+    - _TessellationSmoothing: 1
+    - _TessellationSmoothingVColors: 0
+    m_Colors: []
+  m_BuildTextureStacks: []

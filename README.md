@@ -2,9 +2,13 @@
 
 ## Overview
 
-Welcome to my GitHub repository, which serves as a portfolio showcasing my work as a Visual Effects (VFX) and Shader Artist. This project demonstrates my skills and creativity in the realm of computer graphics, specializing in creating stunning visual effects and shaders for games and interactive media.
+Welcome to my GitHub repository, which serves as a portfolio showcasing my work as a Visual Effects (VFX) and Shader (Technical) Artist. This project demonstrates my skills and creativity in the realm of computer graphics, specializing in creating stunning visual effects and shaders for games and interactive media.
 
-[Walkthrough](https://youtu.be/Vjux-ZXiPVo)
+This project also contains custom particle system, which also available solely in their own [repository](https://github.com/5a5ha111/CustomVFX) .
+
+[Walkthrough](https://youtu.be/dANNDLbDnuM)
+
+![Prewiew](GitImages\Preview.png)  
 
 ## Table of Contents
 
@@ -39,6 +43,4 @@ This portfolio is licensed under the [MIT License](LICENSE).
 - **Email:** [5a5ha0rr1ove@gmail.com](mailto:5a5ha0rr1ove@gmail.com)
 - **LinkedIn:** [LinkedIn Profile](https://www.linkedin.com/in/sasha-orlova-abb960273/)
 
-Feel free to reach out if you have any questions, collaboration opportunities, or just want to connect!
-
-Thank you for visiting my portfolio!
+Feel free to reach out if you have any questions, collaboration opportunities, or just want to connect.

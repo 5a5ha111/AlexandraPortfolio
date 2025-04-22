@@ -1,0 +1,221 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+struct SourceVertex
+{
+    float3 positionOS;
+    float2 uv;
+};
+
+StructuredBuffer<SourceVertex> _SourceVertices;
+StructuredBuffer<int> _SourceIndices;
+
+struct GeneratedVertex
+{
+    float3 positionOS;
+    float3 normalOS;
+    float2 uv;
+};
+
+RWStructuredBuffer<GeneratedVertex> _GeneratedVertices;
+RWStructuredBuffer<int> _GeneratedIndices;
+
+int _NumSourceTriangles;
+float _PyramidHeight;
+float4x4 _Transform;
+
+float4x4 _TransformOStoWS;
+float4x4 _TransformWStoOS;
+
+void TessellateEdge(SourceVertex a, SourceVertex b, SourceVertex c, int startIndex)
+{
+    // Linear interpolation between two vertices
+    float3 v1 = a.positionOS;
+    float3 v2 = b.positionOS;
+    float3 v3 = c.positionOS;
+
+    float3 midPoint1 = (v1 + v2) / 2;
+    float3 midPoint2 = (v2 + v3) / 2;
+    float3 midPoint3 = (v1 + v3) / 2;
+
+    // Create the tessellated triangle
+    // Triangle triangles[3];
+    //Buffer<float3> _VertPos;
+
+    /*_VertPos[0] = v1;
+    _VertPos[1] = midPoint1;
+    _VertPos[2] = midPoint3;
+
+    _VertPos[3] = midPoint1;
+    _VertPos[4] = v2;
+    _VertPos[5] = midPoint2;
+    
+    _VertPos[6] = midPoint3;
+    _VertPos[7] = midPoint2;
+    _VertPos[8] = v3;
+
+    //return _VertPos;
+
+    GeneratedVertex genVert1 = (GeneratedVertex)0;
+    genVert1.positionOS = midPoint1;
+    GeneratedVertex genVert2 = (GeneratedVertex)0;
+    genVert2.positionOS = midPoint2;
+    GeneratedVertex genVert3 = (GeneratedVertex)0;
+    genVert3.positionOS = midPoint3;*/
+    
+    /*_TemporalTriangles[startIndex].vertex[0] = genVert1;
+    _TemporalTriangles[startIndex].vertex[1] = genVert2;
+    _TemporalTriangles[startIndex].vertex[2] = genVert3;*/
+    /*float2[] tessellatedTriangle = float2[]
+    {
+        v1, midPoint1, midPoint3,
+        midPoint1, v2, midPoint2,
+        midPoint3, midPoint2, v3
+    };*/
+
+    //return triangles;
+}
+SourceVertex GenerateMidPoint(SourceVertex a, SourceVertex b)
+{
+    SourceVertex midPoint;
+    float3 aWS = mul(a.positionOS, _TransformOStoWS).xyz;
+    float3 bWS = mul(b.positionOS, _TransformOStoWS).xyz;
+    float3 midWS = (aWS + bWS) / 2;
+    midPoint.positionOS = mul(midWS, _TransformWStoOS).xyz;
+    midPoint.uv = (a.uv + b.uv) / 2;
+    return midPoint;
+}
+
+SourceVertex Transform(SourceVertex v)
+{
+    SourceVertex o;
+    o.positionOS = mul(_Transform, float4(v.positionOS, 1)).xyz;
+    o.uv = v.uv;
+    return o;
+}
+
+float3 CalculateSurfaceNormal(float3 p1, float3 p2, float3 p3)
+{
+    float3 U = p2 - p1;
+    float3 V = p3 - p1;
+
+    float3 normal;
+    normal.x = (U.y * V.z) - (U.z * V.y);
+    normal.y = (U.z * V.x) - (U.x * V.z);
+    normal.z = (U.x * V.y) - (U.y * V.x);
+
+    return normalize(normal);
+}
+GeneratedVertex MakeGeneratedVertex(SourceVertex source, float3 normal)
+{
+    GeneratedVertex o;
+    o.positionOS = source.positionOS;
+    o.normalOS = normal;
+    o.uv = source.uv;
+    return o;
+}
+
+void AddTriangle(int startIndex, SourceVertex a, SourceVertex b, SourceVertex c)
+{
+    float3 triangleNormal = CalculateSurfaceNormal(a.positionOS, b.positionOS, c.positionOS);
+
+    _GeneratedVertices[startIndex] = MakeGeneratedVertex(a, triangleNormal);
+    _GeneratedVertices[startIndex + 1] = MakeGeneratedVertex(b, triangleNormal);
+    _GeneratedVertices[startIndex + 2] = MakeGeneratedVertex(c, triangleNormal);
+    _GeneratedIndices[startIndex] = startIndex;
+    _GeneratedIndices[startIndex + 1] = startIndex + 1;
+    _GeneratedIndices[startIndex + 2] = startIndex + 2;
+}
+
+
+[numthreads(8,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+    if((int)id.x >= _NumSourceTriangles)
+    {
+        return;
+    }
+
+    int triStart = id.x * 3;
+    SourceVertex a = Transform(_SourceVertices[_SourceIndices[triStart]]);
+    SourceVertex b = Transform(_SourceVertices[_SourceIndices[triStart + 1]]);
+    SourceVertex c = Transform(_SourceVertices[_SourceIndices[triStart + 2]]);
+
+    /*float3 aWS = mul(a.positionOS, _TransformOStoWS).xyz;
+    float3 bWS = mul(b.positionOS, _TransformOStoWS).xyz;
+    float3 cWS = mul(c.positionOS, _TransformOStoWS).xyz;
+
+    float avgDist = length(abs(((aWS - bWS) + (aWS - cWS)) / 2));*/
+
+    //float3 triNormal = CalculateSurfaceNormal(a.positionOS, b.positionOS, c.positionOS);
+    SourceVertex center;
+    center.positionOS = (a.positionOS + b.positionOS + c.positionOS) / 3 /*+ triNormal * _PyramidHeight*/;
+    center.uv = (a.uv + b.uv + c.uv) / 3;
+
+    SourceVertex midPoint1 = GenerateMidPoint(a, b);
+    SourceVertex midPoint2 = GenerateMidPoint(b, c);
+    SourceVertex midPoint3 = GenerateMidPoint(a, c);
+    /*midPoint1.positionOS = (a.positionOS + b.positionOS) / 2;
+    midPoint1.uv = (a.uv + b.uv) / 2;*/
+    
+    /*SourceVertex midPoint2;
+    midPoint2.positionOS = (b.positionOS + c.positionOS) / 2;
+    midPoint2.uv = (b.uv + c.uv) / 2;
+    
+    SourceVertex midPoint3;
+    midPoint3.positionOS = (c.positionOS + a.positionOS) / 2;
+    midPoint3.uv = (c.uv + a.uv) / 2;*/
+
+    /*float3 midPoint1 = (v1 + v2) / 2;
+    float3 midPoint2 = (v2 + v3) / 2;
+    float3 midPoint3 = (v1 + v3) / 2;*/
+
+    /*v1, midPoint1, midPoint3,
+    midPoint1, v2, midPoint2,
+    midPoint3, midPoint2, v3*/
+
+    //int generatedStart = id.x * 3 * 3;
+    int vertIndex = id.x * 6;
+    int idexIndex = id.x * 12;
+
+    /*AddTriangle(generatedStart, a, b, center);
+    AddTriangle(generatedStart + 3, b, c, center);
+    AddTriangle(generatedStart + 6, c, a, center);*/
+
+    /*AddTriangle(generatedStart, a, midPoint1, midPoint3);
+    AddTriangle(generatedStart + 3, midPoint1, b, midPoint2);
+    AddTriangle(generatedStart + 6, midPoint3, midPoint2, c);
+    AddTriangle(generatedStart + 9, midPoint1, midPoint2, midPoint3);*/
+
+    float3 triangleNormal = CalculateSurfaceNormal(a.positionOS, b.positionOS, c.positionOS);
+    _GeneratedVertices[vertIndex] = MakeGeneratedVertex(a, triangleNormal);
+    _GeneratedVertices[vertIndex + 1] = MakeGeneratedVertex(midPoint1, triangleNormal);
+    _GeneratedVertices[vertIndex + 2] = MakeGeneratedVertex(midPoint3, triangleNormal);
+    _GeneratedVertices[vertIndex + 3] = MakeGeneratedVertex(b, triangleNormal);
+    _GeneratedVertices[vertIndex + 4] = MakeGeneratedVertex(midPoint2, triangleNormal);
+    _GeneratedVertices[vertIndex + 5] = MakeGeneratedVertex(c, triangleNormal);
+    int aIndex = vertIndex;
+    int bIndex = vertIndex + 3;
+    int cIndex = vertIndex + 5;
+    int midPoint1Index = vertIndex + 1;
+    int midPoint2Index = vertIndex + 4;
+    int midPoint3Index = vertIndex + 2;
+
+    // trig 1
+    _GeneratedIndices[idexIndex] = aIndex;         // a
+    _GeneratedIndices[idexIndex + 1] = midPoint1Index; // midPoint1
+    _GeneratedIndices[idexIndex + 2] = midPoint3Index; // midPoint3
+    //trig 2
+    _GeneratedIndices[idexIndex + 3] = midPoint1Index; // midPoint1
+    _GeneratedIndices[idexIndex + 4] = bIndex; // b
+    _GeneratedIndices[idexIndex + 5] = midPoint2Index; // midPoint2
+    //trig 3
+    _GeneratedIndices[idexIndex + 6] = midPoint3Index; // midPoint3
+    _GeneratedIndices[idexIndex + 7] = midPoint2Index; // midPoint2
+    _GeneratedIndices[idexIndex + 8] = cIndex; // c
+    //trig 4
+    _GeneratedIndices[idexIndex + 9] = midPoint1Index; // midPoint1
+    _GeneratedIndices[idexIndex + 10] = midPoint2Index; // midPoint2
+    _GeneratedIndices[idexIndex + 11] = midPoint3Index; // midPoint3
+}

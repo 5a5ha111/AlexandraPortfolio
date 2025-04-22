@@ -1,0 +1,169 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel Main
+
+// We need to tell the compiler to compile a version of this shader
+// with and without the USE_WORLD_POSITION_AS_UV keyword
+#pragma multi_compile _ USE_WORLD_POSITION_AS_UV
+
+struct SourceVertex
+{
+    float3 positionOS;
+    float3 normalOS;
+    float2 uv;
+};
+
+StructuredBuffer<SourceVertex> _SourceVertices;
+StructuredBuffer<int> _SourceTriangles;
+
+struct DrawVertex 
+{
+    float3 positionWS;
+    float3 normalWS;
+    float2 uv;
+};
+
+struct DrawTriangle
+{
+    float2 height; //clipping height, color lerp
+    DrawVertex vertices[3];
+};
+
+AppendStructuredBuffer<DrawTriangle> _DrawTriangles;
+
+int _NumSourceTriangles;
+float4x4 _LocalToWorld;
+int _MaxLayers;
+float _TotalHeight;
+float _WorldPositionToUVScale;
+
+float _CameraDistanceMin;
+float _CameraDistanceMax;
+float _CameraDistanceFactor;
+float4 _CameraPosition;
+
+
+DrawVertex MakeBaseDrawVertex(SourceVertex v)
+{
+    DrawVertex o;
+    o.normalWS = mul(_LocalToWorld, float4(v.normalOS, 0)).xyz;
+    o.positionWS = mul(_LocalToWorld, float4(v.positionOS, 1)).xyz;
+    #ifdef USE_WORLD_POSITION_AS_UV
+    o.uv = o.positionWS.xz * _WorldPositionToUVScale;
+    #else
+    o.uv = v.uv;
+    #endif
+    return o;
+}
+DrawVertex ExtrudeVertex(DrawVertex v, float height)
+{
+    DrawVertex o;
+    //Set the position by extruding along the normal, at a fraction of total height
+    o.positionWS = v.positionWS + v.normalWS * (height * _TotalHeight);
+    o.normalWS = v.normalWS;
+    o.uv = v.uv;
+    return o;
+}
+
+/*float GetDistanceFromCamera(DrawVertex v)
+{
+    return distance(v.positionWS.xyz, _CameraPosition.xyz);
+}
+//Calculate the number of layers by applying LOD settings
+int GetNumLayers(DrawVertex a, DrawVertex b, DrawVertex c)
+{
+    float dA = GetDistanceFromCamera(a);
+    float dB = GetDistanceFromCamera(b);
+    float dC = GetDistanceFromCamera(c);
+    // Each vertex in the triangle must have the same amount of layers, so use the
+    // distance to the closest vertex
+    float d = min(dA, min(dB, dC));
+    // Unlerp between the min and max camera distance, and invert so 0 is at maximum distance
+    d = 1 - smoothstep(_CameraDistanceMin, _CameraDistanceMax, d);
+    // Apply a power to fine tune the fall off
+    d = pow(abs(d), _CameraDistanceFactor);
+    // Return the number of layers. 1 is the minimum supported
+    return max(1, ceil(d * _MaxLayers));
+}*/
+float GetDistanceFromCamera(DrawVertex v) {
+    return distance(v.positionWS.xyz, _CameraPosition.xyz);
+}
+
+// Calculate the number of layers by applying LOD settings
+int GetNumLayers(DrawVertex a, DrawVertex b, DrawVertex c) {
+    float dA = GetDistanceFromCamera(a);
+    float dB = GetDistanceFromCamera(b);
+    float dC = GetDistanceFromCamera(c);
+    // Each vertex in the triangle must have the same amount of layers, so use the
+    // distance to the closest vertex
+    float d = min(dA, min(dB, dC));
+    // Unlerp between the min and max camera distance, and invert so 0 is at maximum distance
+    d = 1 - smoothstep(_CameraDistanceMin, _CameraDistanceMax, d);
+    // Apply a power to fine tune the fall off
+    d = pow(abs(d), _CameraDistanceFactor);
+    // Return the number of layers. 1 is the minimum supported
+    return max(1, ceil(d * _MaxLayers));
+}
+
+
+
+
+[numthreads(128,1,1)]
+void Main (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+    if((int)id.x >= _NumSourceTriangles)
+    {
+        return;
+    }
+
+    int triStart = id.x * 3;
+    DrawVertex inputs[3];
+    // The unroll attribute tells the compiler to "unroll" the loop, since it has
+    // a constant number of iterations. This is more efficient
+    [unroll] for (int i = 0; i < 3; i++)
+    {
+        inputs[i] = MakeBaseDrawVertex(_SourceVertices[_SourceTriangles[triStart + i]]);
+    }
+
+    // Calculate the number of layers for this triangle
+    int numLayers = GetNumLayers(inputs[0], inputs[1], inputs[2]);
+    // To get LOD to look right, we will calulate three different heights
+    // posHeight: the distance to extrude the layer
+    // texHeight: the height to use in the clipping algorithm on the graphics shader
+    // colorHeight: the lerp value to use when calculating the grass color
+
+    // We want to average the colors at far LOD. This offset will help
+    float colorOffset = (_MaxLayers - numLayers) / 2.0f;
+
+    for (i = 0; i < numLayers; i++)
+    {
+        //The posHeight ranges from 0 to 1 over this loop. Notably, it is 0 if numLayers is 1
+        float posHeight = (float)i / max(1, numLayers - 1.0f);
+        //The texHeight ranges from 0 to (numLayers - 1) / numLayers. If this reached 1, the top layer would be invisible
+        float texHeight = (float)i / numLayers;
+        // The colorHeight is calculated so that the value is closer to 0.5 the less layers there are
+        // This is so at far distances, the grass does not appear too noisy or dark
+        float colorHeight = (float)(colorOffset + i) / (_MaxLayers - 1.0);
+
+        DrawTriangle tri = (DrawTriangle)0;
+        tri.height = float2(texHeight, colorHeight);
+        [unroll] for (int p = 0; p < 3; p++)
+        {
+            tri.vertices[p] = ExtrudeVertex(inputs[p], posHeight);
+        }
+
+        _DrawTriangles.Append(tri);
+
+        //Calculate a triangle by extruding each vertex
+    }
+
+    /*DrawTriangle tri = (DrawTriangle)0;
+    tri.height = 0;
+    [unroll] for (int p = 0; p < 3; p++)
+    {
+        tri.vertices[p] = inputs[p];
+    }
+
+    _DrawTriangles.Append(tri);*/
+
+}

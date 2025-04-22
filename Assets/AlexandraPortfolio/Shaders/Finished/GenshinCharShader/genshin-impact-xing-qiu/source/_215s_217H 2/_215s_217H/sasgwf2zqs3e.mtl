@@ -1,0 +1,155 @@
+# File produced by Open Asset Import Library (http://www.assimp.sf.net)
+# (assimp v5.0.639693989)
+
+newmtl a
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/Avatar_Boy_Sword_Xingqiu_Tex_Face_Diffuse.png
+
+newmtl b
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/Avatar_Boy_Sword_Xingqiu_Tex_Face_Diffuse.png
+
+newmtl c
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/Avatar_Boy_Sword_Xingqiu_Tex_Face_Diffuse.png
+
+newmtl d
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/Avatar_Boy_Sword_Xingqiu_Tex_Face_Diffuse.png
+
+newmtl e
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/Avatar_Boy_Sword_Xingqiu_Tex_Face_Diffuse.png
+
+newmtl f
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/Avatar_Boy_Sword_Xingqiu_Tex_Face_Diffuse.png
+
+newmtl g
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/Avatar_Boy_Sword_Xingqiu_Tex_Face_Diffuse.png
+
+newmtl h
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/Avatar_Boy_Sword_Xingqiu_Tex_Face_Diffuse.png
+
+newmtl i
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/Avatar_Boy_Sword_Xingqiu_Tex_Face_Diffuse.png
+
+newmtl j
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/Avatar_Boy_Sword_Xingqiu_Tex_Hair_Diffuse.png
+
+newmtl k
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/Avatar_Boy_Sword_Xingqiu_Tex_Hair_Diffuse.png
+
+newmtl l
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/Avatar_Boy_Sword_Xingqiu_Tex_Body_Diffuse.png
+
+newmtl m
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/Avatar_Boy_Sword_Xingqiu_Tex_Body_Diffuse.png
+
+newmtl n
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/Avatar_Boy_Sword_Xingqiu_Tex_Body_Diffuse.png
+
+newmtl o
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/Avatar_Boy_Sword_Xingqiu_Tex_Body_Diffuse.png
+
+newmtl p
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/Avatar_Boy_Sword_Xingqiu_Tex_Body_Diffuse.png
+
+newmtl q
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/Avatar_Boy_Sword_Xingqiu_Tex_Body_Diffuse.png
+
+newmtl r
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/smile.png
+
+newmtl s
+Kd 1 1 1
+Ka 0.60000002 0.60000002 0.60000002
+Ks 0 0 0
+d 1
+illum 1
+map_Kd tex/smile.png
+

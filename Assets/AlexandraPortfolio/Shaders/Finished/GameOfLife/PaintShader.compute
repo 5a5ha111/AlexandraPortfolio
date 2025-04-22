@@ -1,0 +1,80 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float4> Result;
+RWTexture2D<float4> PreResult;
+bool isAlive;
+bool isPaint;
+float BrushPosX;
+float BrushPosY;
+float Radius;
+
+float gameFieldSize;
+float streamsCount;
+
+
+float2 unity_gradientNoise_dir(float2 p)
+{
+    p = p % 289;
+    float x = (34 * p.x + 1) * p.x % 289 + p.y;
+    x = (34 * x + 1) * x % 289;
+    x = frac(x / 41) * 2 - 1;
+    return normalize(float2(x - floor(x + 0.5), abs(x) - 0.5));
+}
+
+float unity_gradientNoise(float2 p)
+{
+    float2 ip = floor(p);
+    float2 fp = frac(p);
+    float d00 = dot(unity_gradientNoise_dir(ip), fp);
+    float d01 = dot(unity_gradientNoise_dir(ip + float2(0, 1)), fp - float2(0, 1));
+    float d10 = dot(unity_gradientNoise_dir(ip + float2(1, 0)), fp - float2(1, 0));
+    float d11 = dot(unity_gradientNoise_dir(ip + float2(1, 1)), fp - float2(1, 1));
+    fp = fp * fp * fp * (fp * (fp * 6 - 15) + 10);
+    return lerp(lerp(d00, d01, fp.y), lerp(d10, d11, fp.y), fp.x);
+}
+
+void Unity_GradientNoise_float(float2 UV, float Scale, out float Out)
+{
+    Out = unity_gradientNoise(UV * Scale) + 0.5;
+}
+
+
+[numthreads(16,16,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+
+    /*if (isPaint)
+    {
+        if (id.x > BrushPosX - Radius && id.x < BrushPosX + Radius &&
+            id.y > BrushPosY - Radius && id.y < BrushPosY + Radius)
+        {
+            if (isAlive)
+            {
+                Result[id.xy] = float4(1.0, 1.0, 1.0, 1.0);
+                PreResult[id.xy] = float4(1.0, 1.0, 1.0, 1.0);
+            }
+            else
+            {
+                Result[id.xy] = float4(0.0, 0.0, 0.0, 1.0);
+                PreResult[id.xy] = float4(0.0, 0.0, 0.0, 1.0);
+            }
+        }
+
+    }*/
+    
+    float noiseMC;
+    Unity_GradientNoise_float(float2(id.x / gameFieldSize, id.y / gameFieldSize), 100.0, noiseMC);
+
+    noiseMC = saturate(noiseMC);
+    float resultOut = step(0.5, noiseMC);
+    Result[id.xy] = resultOut;
+    PreResult[id.xy] = resultOut;
+    //Result[id.xy] = noiseMC;
+
+    //Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+}
+
