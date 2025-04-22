@@ -4,7 +4,7 @@
 
 Welcome to my GitHub repository, which serves as a portfolio showcasing my work as a Visual Effects (VFX) and Shader (Technical) Artist. This project demonstrates my skills and creativity in the realm of computer graphics, specializing in creating stunning visual effects and shaders for games and interactive media.
 
-This project also contains custom particle system, which also available solely in their own [repository](https://github.com/5a5ha111/CustomVFX) .
+This project also contains custom particle system, which also available solely in their own [repository](https://github.com/5a5ha111/CustomVFX) . Also check [NoesisRender](https://github.com/5a5ha111/NoesisRender), Render Pipeline written by me.
 
 [Walkthrough](https://youtu.be/dANNDLbDnuM)
 
