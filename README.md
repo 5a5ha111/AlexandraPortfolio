@@ -8,7 +8,7 @@ This project also contains custom particle system, which also available solely i
 
 [Walkthrough](https://youtu.be/dANNDLbDnuM)
 
-![Prewiew](GitImages\Preview.png)  
+![Prewiew](GitImages/Preview.png)  
 
 ## Table of Contents
 
