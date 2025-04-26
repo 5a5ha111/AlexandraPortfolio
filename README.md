@@ -22,6 +22,29 @@ This project also contains custom particle system, which also available solely i
 
 As a passionate VFX and Shader Artist, I strive to push the boundaries of visual storytelling through the power of computer-generated imagery. In this portfolio you can find a demonstration of the use of various shader and visual effects techniques.
 
+## Most Noticeable shaders
+
+![Prewiew](GitImages\Cuball.gif) 
+A vertex shader with two tasks: deforming the surface of a cube (a simple task) and calculating new normals for the surface (a complex task). 
+A universal method was used to calculate new normals.
+
+---
+
+![Prewiew](GitImages\MagickWaterBall.gif) 
+Magic water ball shader
+
+---
+
+![Prewiew](GitImages\FakeLiquid.gif) 
+Fake Liquid in colbe
+
+---
+
+![Prewiew](GitImages\Interior.gif)
+The shader creates the illusion that there are rooms inside this building. It's much cheaper (both in effort and performance) than creating actual spaces inside each home.
+
+---
+
 ## Technologies
 
 - Unity Editor itself
